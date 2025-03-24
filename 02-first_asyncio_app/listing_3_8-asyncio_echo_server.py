@@ -3,14 +3,29 @@
 # using asyncio now instead of low-level sockets and selectors for an event notification system
 
 import asyncio
+import logging
 import socket
 from asyncio import AbstractEventLoop
 
 
 async def echo(connection: socket, loop: AbstractEventLoop) -> None:
-    while data := await loop.sock_recv(connection, 1024):
-        print(f"New data, from {connection.getpeername()}: {data}")
-        await loop.sock_sendall(connection, data)
+    # handling errors in asyncio echo server with asyncio tasks
+    # two ways of doing it:
+    # 1. you know where the error or exception will be raised - handle with "try, except, finally" block
+    # this works if the tasks is not referenced anywhere in the code (hence garbage-collected)
+    # 2. you don't know (and not garbage-collected) - await the asyncio created task to retrieve error
+    try:
+        while data := await loop.sock_recv(connection, 1024):
+            print(f"New data, from {connection.getpeername()}: {data}")
+            if data == b"boom\r\n":
+                raise Exception("Unexpected network error")
+            await loop.sock_sendall(connection, data)
+    # catch exception
+    except Exception as ex:
+        logging.exception(ex)
+    finally:
+        # after handling exception, close the client connection
+        connection.close()
 
 
 async def listen_for_connection(server_socket: socket, loop: AbstractEventLoop) -> None:
@@ -39,3 +54,4 @@ if __name__ == "__main__":
 
 # this echo server works just like the one built with low-level sockets and selectors
 # but with asyncio APIs.
+# here, we also handled the error/exception that occured within a created task
