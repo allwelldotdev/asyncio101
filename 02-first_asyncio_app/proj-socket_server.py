@@ -122,7 +122,7 @@ while True:
             ]:
                 client_color = search_data
 
-                client_color_dict = {"color": client_color}
+                # client_color_dict = {"color": client_color}
                 client_db[event_socket].get(
                     "color",
                     client_db[event_socket].setdefault("color", client_color),
