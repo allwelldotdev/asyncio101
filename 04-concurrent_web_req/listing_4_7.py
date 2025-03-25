@@ -4,7 +4,7 @@
 # when in asyncio.gather() - return_exceptions=False (default):
 # if any coroutines throw exceptions, gather will also throw when we await it
 # when in asyncio.gather() - return_exceptions=True:
-# gather will not *throw* an exception, instead it'll return it (the exception)
+# gather will not *throw* an exception, instead it'll return the exception object
 # as part of the result list
 
 
