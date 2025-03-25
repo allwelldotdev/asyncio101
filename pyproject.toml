@@ -4,4 +4,6 @@ version = "0.1.0"
 description = "Learning asyncio from Python Concurrency with asyncio by Matthew Fowler"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "aiohttp==3.8.1",
+]
